@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Live Cricket Score Management</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+            text-align: center;
+        }
+
+        header {
+            background-color: #333;
+            color: #fff;
+            padding: 15px;
+        }
+
+        main {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .match {
+            border-bottom: 1px solid #ccc;
+            padding: 10px 0;
+        }
+
+        .team {
+            font-weight: bold;
+        }
+
+        .score {
+            font-size: 24px;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>Live Cricket Score Management</h1>
+</header>
+
+<main>
+    <div class="match" id="match1">
+        <h2>Match 1</h2>
+        <p class="team">Team A vs Team B</p>
+        <p class="score" id="score1">Team A: 0/0</p>
+        <button onclick="updateScore('match1', 'team1', 1)">Add Run for Team A</button>
+        <button onclick="updateScore('match1', 'team2', 1)">Add Run for Team B</button>
+    </div>
+
+    <div class="match" id="match2">
+        <h2>Match 2</h2>
+        <p class="team">Team C vs Team D</p>
+        <p class="score" id="score2">Team C: 0/0</p>
+        <button onclick="updateScore('match2', 'team1', 1)">Add Run for Team C</button>
+        <button onclick="updateScore('match2', 'team2', 1)">Add Run for Team D</button>
+    </div>
+</main>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
+<script>
+    const socket = io();
+
+    socket.on('initialScores', (scores) => {
+        updateScores(scores);
+    });
+
+    socket.on('updateScores', (scores) => {
+        updateScores(scores);
+    });
+
+    function updateScores(scores) {
+        document.getElementById('score1').innerText = `Team A: ${scores.match1.team1}/${scores.match1.team2}`;
+        document.getElementById('score2').innerText = `Team C: ${scores.match2.team1}/${scores.match2.team2}`;
+    }
+
+    function updateScore(match, team, runs) {
+        socket.emit('updateScore', { match, team, runs });
+    }
+</script>
+
+</body>
+</html>
